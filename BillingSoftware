@@ -24,3 +24,73 @@ public class BillingSoftware {
         System.out.println("Thank you for using the Billing Software!");
         scanner.close();
     }
+
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class CreateDatabaseTables {
+    public static void main(String[] args) {
+        final String DB_URL = "jdbc:mysql://localhost/";
+        final String DB_NAME = "Product_info";
+        final String DB_USER = "root";
+        final String DB_PASSWORD = "password"; // Replace with your own password
+
+        Connection connection = null;
+        Statement statement = null;
+
+        try {
+            // Connect to the MySQL server
+            connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+
+            // Create the Product_info database if it doesn't exist
+            statement = connection.createStatement();
+            statement.executeUpdate("CREATE DATABASE IF NOT EXISTS " + DB_NAME);
+
+            // Use the Product_info database
+            statement.executeUpdate("USE " + DB_NAME);
+
+            // Create the Products table
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS Products (" +
+                    "product_id INT NOT NULL AUTO_INCREMENT," +
+                    "product_name VARCHAR(255) NOT NULL," +
+                    "product_description TEXT," +
+                    "product_category VARCHAR(50)," +
+                    "product_price DECIMAL(10,2) NOT NULL," +
+                    "PRIMARY KEY (product_id)" +
+                    ")");
+
+            // Create the Customers table
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS Customers (" +
+                    "customer_id INT NOT NULL AUTO_INCREMENT," +
+                    "customer_name VARCHAR(255) NOT NULL," +
+                    "customer_email VARCHAR(255) UNIQUE," +
+                    "customer_phone VARCHAR(20)," +
+                    "PRIMARY KEY (customer_id)" +
+                    ")");
+
+            // Create the Orders table
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS Orders (" +
+                    "order_id INT NOT NULL AUTO_INCREMENT," +
+                    "order_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP," +
+                    "customer_id INT NOT NULL," +
+                    "PRIMARY KEY (order_id)," +
+                    "FOREIGN KEY (customer_id) REFERENCES Customers(customer_id)" +
+                    ")");
+
+            System.out.println("Database tables created successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // Close the database resources
+            try {
+                if (statement != null) statement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
