@@ -1,0 +1,26 @@
+import java.util.Scanner;
+
+public class BillingSoftware {
+    
+    // Define products and their prices
+    static String[] products = {"WashingMachine", "Product B", "Product C"};
+    static double[] prices = {20000, 5.99, 7.99};
+    
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Welcome to the Billing Software!");
+        System.out.println("Please enter the product code or -1 to exit: ");
+        int productCode = scanner.nextInt();
+        while (productCode != -1) {
+            double price = getPrice(productCode);
+            if (price == -1) {
+                System.out.println("Invalid product code. Please try again.");
+            } else {
+                System.out.println("The price of " + products[productCode-1] + " is $" + price);
+            }
+            System.out.println("Please enter the product code or -1 to exit: ");
+            productCode = scanner.nextInt();
+        }
+        System.out.println("Thank you for using the Billing Software!");
+        scanner.close();
+    }
